@@ -1,0 +1,110 @@
+dataset:
+  height: 1080
+  width: 1920
+  mean: [0.473408, 0.44432889, 0.42011778]
+  std: [0.23041105, 0.22339764, 0.22698703]
+  batch_size_pergpu: 24
+  segm_downsampling_rate: 1
+  augmentation:
+    augmix:
+      val: False
+    cutout:
+      val: False
+    techniques:
+      pixel:
+        RandomBrightnessContrast: True
+        Blur: False
+        OpticalDistortion: False
+        ImageCompression: True
+        MultiplicativeNoise: False
+        IAASharpen: False
+        IAAEmboss: False
+        MotionBlur: True
+        MedianBlur: False
+        GaussNoise: True
+        RandomGamma: False
+        CLAHE: False
+        HueSaturationValue: False
+      spatial:
+        verticalflip: False
+        horizontalflip: True
+        randomcrop: True
+        scale: True
+        scale_factor: 16
+        cropping:
+          width: 960
+          height: 540
+train:
+  accumulation_steps: 1
+  n_epochs: 500
+  gpus: (0,)
+optimizer:
+  val: "ranger"
+  lr: 0.01
+  weight_decay: 0.0005
+  lrscheduler:
+    val: "polylr"
+model:
+  amp: False
+  n_classes: 11
+  decoder: "C1_transposed"
+  backbone: "hrnetv2stage3"
+  fcdim: 112
+  EXTRA:
+    FINAL_CONV_KERNEL: 1
+    STAGE1:
+      NUM_MODULES: 1
+      NUM_RANCHES: 1
+      BLOCK: BOTTLENECK
+      NUM_BLOCKS:
+        - 1
+      NUM_CHANNELS:
+        - 32
+      FUSE_METHOD: SUM
+    STAGE2:
+      NUM_MODULES: 1
+      NUM_BRANCHES: 2
+      BLOCK: BASIC
+      NUM_BLOCKS:
+        - 2
+        - 2
+      NUM_CHANNELS:
+        - 16
+        - 32
+      FUSE_METHOD: SUM
+    STAGE3:
+      NUM_MODULES: 1
+      NUM_BRANCHES: 3
+      BLOCK: BASIC
+      NUM_BLOCKS:
+        - 2
+        - 2
+        - 2
+      NUM_CHANNELS:
+        - 16
+        - 32
+        - 64
+      FUSE_METHOD: SUM
+    pretrained: ""
+Loss:
+  val: "ohem"
+  ignore_label: 255
+  rate: 0.8
+  # class_weights:
+  #   [
+  #     0.1,
+  #     0.5,
+  #     0.5,
+  #     0.5,
+  #     1,
+  #     1,
+  #     1.0531642566772816,
+  #     1,
+  #     1.8220444140299081,
+  #     1,
+  #     1.000005461169491,
+  #   ]
+valid:
+  frequency: 1
+  val: True
+  write: True
