@@ -3,6 +3,8 @@ The pipelines detect number plates of all indian standard number plates. It also
 
 Four different pipeline have been developed for indian vehices to to work on different use cases. One works with images of cars, one with pre-recorded video, one works with live cctv footage and one pipeline was developed to benchmark the result on a GPU instance.
 
+We have used custom devloped HRnet pipeline for plate segmentation and LPRnet for decoding the number on the plate. 
+
 For inference check the argument parser in main file of each pipeline.
 
 ## Deployed Link
